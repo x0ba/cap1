@@ -6,6 +6,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
@@ -25,12 +26,7 @@ function App() {
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl border bg-muted/40" />
-            <div className="aspect-video rounded-xl border bg-muted/40" />
-            <div className="aspect-video rounded-xl border bg-muted/40" />
-          </div>
-          <div className="min-h-[50vh] flex-1 rounded-xl border bg-muted/40" />
+          <Outlet />
         </main>
       </SidebarInset>
     </SidebarProvider>
