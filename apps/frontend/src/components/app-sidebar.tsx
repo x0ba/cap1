@@ -1,4 +1,5 @@
-import * as React from "react";
+import type { ComponentType } from "react";
+import { NavLink, useMatch } from "react-router-dom";
 import {
   ArrowLeftRight,
   Bell,
@@ -36,29 +37,33 @@ import {
 
 type NavItem = {
   title: string;
-  icon: React.ComponentType<{ className?: string }>;
+  to: string;
+  icon: ComponentType<{ className?: string }>;
   badge?: string;
 };
 
 const bankNav: NavItem[] = [
-  { title: "Overview", icon: House },
-  { title: "Accounts", icon: Landmark },
-  { title: "Cards", icon: CreditCard, badge: "2" },
-  { title: "Move Money", icon: ArrowLeftRight },
-  { title: "Pay Bills", icon: Receipt, badge: "3" },
-  { title: "Deposits", icon: Wallet },
+  { title: "Overview", to: "/", icon: House },
+  { title: "Accounts", to: "/accounts", icon: Landmark },
+  { title: "Cards", to: "/cards", icon: CreditCard, badge: "2" },
+  { title: "Move Money", to: "/move-money", icon: ArrowLeftRight },
+  { title: "Pay Bills", to: "/pay-bills", icon: Receipt, badge: "3" },
+  { title: "Deposits", to: "/deposits", icon: Wallet },
 ];
 
 const growNav: NavItem[] = [
-  { title: "Savings Goals", icon: PiggyBank },
-  { title: "Spending Insights", icon: TrendingUp },
-  { title: "CreditWise", icon: ShieldCheck },
-  { title: "Rewards", icon: Gift, badge: "New" },
+  { title: "Savings Goals", to: "/savings-goals", icon: PiggyBank },
+  { title: "Spending Insights", to: "/spending-insights", icon: TrendingUp },
+  { title: "CreditWise", to: "/creditwise", icon: ShieldCheck },
+  { title: "Rewards", to: "/rewards", icon: Gift, badge: "New" },
+];
+
+const footerNav: NavItem[] = [
+  { title: "Settings", to: "/settings", icon: Settings },
+  { title: "Help & Support", to: "/help-support", icon: LifeBuoy },
 ];
 
 export function AppSidebar() {
-  const [active, setActive] = React.useState("Overview");
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -90,12 +95,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {bankNav.map((item) => (
-                <NavRow
-                  key={item.title}
-                  item={item}
-                  active={active === item.title}
-                  onSelect={() => setActive(item.title)}
-                />
+                <NavRow key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -106,12 +106,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {growNav.map((item) => (
-                <NavRow
-                  key={item.title}
-                  item={item}
-                  active={active === item.title}
-                  onSelect={() => setActive(item.title)}
-                />
+                <NavRow key={item.title} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -127,18 +122,9 @@ export function AppSidebar() {
               <SidebarMenuBadge>5</SidebarMenuBadge>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Settings">
-              <Settings />
-              <span>Settings</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Help & Support">
-              <LifeBuoy />
-              <span>Help &amp; Support</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {footerNav.map((item) => (
+            <NavRow key={item.title} item={item} />
+          ))}
         </SidebarMenu>
 
         <SidebarSeparator />
@@ -164,21 +150,15 @@ export function AppSidebar() {
   );
 }
 
-function NavRow({
-  item,
-  active,
-  onSelect,
-}: {
-  item: NavItem;
-  active: boolean;
-  onSelect: () => void;
-}) {
+function NavRow({ item }: { item: NavItem }) {
   const Icon = item.icon;
+  const isActive = !!useMatch({ path: item.to, end: item.to === "/" });
+
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        isActive={active}
-        onClick={onSelect}
+        render={<NavLink to={item.to} />}
+        isActive={isActive}
         tooltip={item.title}
       >
         <Icon />

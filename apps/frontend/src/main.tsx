@@ -8,11 +8,13 @@ import { AccountsPage } from "./pages/AccountsPage.tsx";
 import { CardsPage } from "./pages/CardsPage.tsx";
 import { CreditWisePage } from "./pages/CreditWisePage.tsx";
 import { DepositsPage } from "./pages/DepositsPage.tsx";
+import { HelpSupportPage } from "./pages/HelpSupportPage.tsx";
 import { MoveMoneyPage } from "./pages/MoveMoneyPage.tsx";
 import { OverviewPage } from "./pages/OverviewPage.tsx";
 import { PayBillsPage } from "./pages/PayBillsPage.tsx";
 import { RewardsPage } from "./pages/RewardsPage.tsx";
 import { SavingsGoalsPage } from "./pages/SavingsGoalsPage.tsx";
+import { SettingsPage } from "./pages/SettingsPage.tsx";
 import { SpendingInsightsPage } from "./pages/SpendingInsightsPage.tsx";
 
 const router = createBrowserRouter([
@@ -30,6 +32,8 @@ const router = createBrowserRouter([
       { path: "spending-insights", element: <SpendingInsightsPage /> },
       { path: "creditwise", element: <CreditWisePage /> },
       { path: "rewards", element: <RewardsPage /> },
+      { path: "settings", element: <SettingsPage /> },
+      { path: "help-support", element: <HelpSupportPage /> },
     ],
   },
 ]);
