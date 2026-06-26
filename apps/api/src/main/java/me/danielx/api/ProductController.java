@@ -1,5 +1,6 @@
 package me.danielx.api;
 
+import me.danielx.api.dto.PublicProductResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +16,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getProducts() {
-        return productService.getAllProducts();
+    public List<PublicProductResponse> getProducts() {
+        return productService.getPublicProducts().stream().map(PublicProductResponse::from).toList();
     }
 
     @GetMapping("{id}")

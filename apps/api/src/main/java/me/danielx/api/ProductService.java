@@ -1,5 +1,6 @@
 package me.danielx.api;
 
+import me.danielx.api.dto.PublicProductResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,10 @@ public class ProductService {
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    public List<Product> getPublicProducts() {
+        return productRepository.findByStatusOrderByDisplayOrderAscNameAsc(ProductStatus.ACTIVE);
     }
 
     public List<Product> getAllProducts() {
