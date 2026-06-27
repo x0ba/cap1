@@ -1,10 +1,9 @@
-package me.danielx.api;
+package me.danielx.api.product;
 
-import me.danielx.api.dto.PublicProductResponse;
+import me.danielx.api.product.dto.PublicProductResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/public/v1/products")
@@ -21,8 +20,8 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public Product getProductById(@PathVariable UUID id) {
-        return productService.getProductById(id);
+    public PublicProductResponse getProductById(@PathVariable Long id) {
+        return PublicProductResponse.from(productService.getPublicProductById(id));
     }
 
     @PostMapping

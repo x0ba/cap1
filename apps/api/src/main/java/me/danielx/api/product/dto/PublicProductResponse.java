@@ -1,12 +1,10 @@
-package me.danielx.api.dto;
+package me.danielx.api.product.dto;
 
-import me.danielx.api.Product;
-import me.danielx.api.ProductType;
-
-import java.util.UUID;
+import me.danielx.api.product.Product;
+import me.danielx.api.product.ProductType;
 
 public record PublicProductResponse(
-        UUID id,
+        Long id,
         String slug,
         String name,
         String shortDescription,

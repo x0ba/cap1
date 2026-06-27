@@ -1,4 +1,4 @@
-package me.danielx.api;
+package me.danielx.api.product;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

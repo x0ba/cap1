@@ -1,37 +1,67 @@
-package me.danielx.api;
+package me.danielx.api.product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
+@Table(
+        name = "products",
+        indexes = {
+                @Index(
+                        name = "idx_products_id",
+                        columnList = "id"
+                )
+        }
+)
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String slug;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = true)
     private String shortDescription;
+
+    @Column(nullable = true)
     private String description;
+
+    @Column(nullable = false)
     private ProductType type;
+
+    @Column(nullable = false)
     private ProductStatus status;
+
+    @Column(nullable = false)
     private boolean featured;
+
+    @Column(nullable = false)
     private boolean applicationAvailable;
-    private int displayOrder;
+
+    @Column(nullable = true)
+    private int displayOrder = 0;
+
+    @Column(nullable = false)
     private Instant createdAt;
+
+    @Column(nullable = true)
     private Instant updatedAt;
+
+    @Version
+    @Column(nullable = false)
     private long version;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(UUID id, String slug, String name, String shortDescription, String description, ProductType type, ProductStatus status, boolean featured, boolean applicationAvailable, int displayOrder, Instant createdAt, Instant updatedAt, long version) {
+    public Product(Long id, String slug, String name, String shortDescription, String description, ProductType type, ProductStatus status, boolean featured, boolean applicationAvailable, int displayOrder, Instant createdAt, Instant updatedAt, long version) {
         this.id = id;
         this.slug = slug;
         this.name = name;
@@ -47,11 +77,11 @@ public class Product {
         this.version = version;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

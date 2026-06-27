@@ -1,4 +1,4 @@
-package me.danielx.api;
+package me.danielx.api.product;
 
 public enum ProductType {
     CHECKING,

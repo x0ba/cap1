@@ -1,10 +1,10 @@
-package me.danielx.api;
+package me.danielx.api.product;
 
-import me.danielx.api.dto.PublicProductResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -26,7 +26,8 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public Product getProductById(UUID id) {
-        return productRepository.findById(id).orElseThrow(() -> new IllegalStateException(id + "not found"));
+    public Product getPublicProductById(Long id) {
+        return productRepository.findByIdAndStatus(id, ProductStatus.ACTIVE)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 }
