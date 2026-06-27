@@ -16,20 +16,16 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Page<Product> getPublicProducts(Pageable pageable) {
+    public Page<Product> findActiveProducts(Pageable pageable) {
         return productRepository.findByStatus(ProductStatus.ACTIVE, pageable);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    public void insertProduct(Product product) {
-        productRepository.save(product);
-    }
-
-    public Product getPublicProductById(Long id) {
+    public Product findActiveProduct(Long id) {
         return productRepository.findByIdAndStatus(id, ProductStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
+
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
     }
 }

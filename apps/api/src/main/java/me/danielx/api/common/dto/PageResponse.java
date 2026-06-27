@@ -1,6 +1,5 @@
-package me.danielx.api.product.dto;
+package me.danielx.api.common.dto;
 
-import me.danielx.api.product.Product;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
