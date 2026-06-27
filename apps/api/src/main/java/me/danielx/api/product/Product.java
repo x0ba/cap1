@@ -1,11 +1,13 @@
 package me.danielx.api.product;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
 
 import java.time.Instant;
 import java.util.Objects;
 
 @Entity
+@Audited
 @Table(
         name = "products",
         indexes = {

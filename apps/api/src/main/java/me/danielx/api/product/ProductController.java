@@ -2,7 +2,6 @@ package me.danielx.api.product;
 
 import me.danielx.api.product.dto.PageResponse;
 import me.danielx.api.product.dto.PublicProductResponse;
-import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
