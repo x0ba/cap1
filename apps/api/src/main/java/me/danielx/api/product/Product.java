@@ -10,8 +10,8 @@ import java.util.Objects;
         name = "products",
         indexes = {
                 @Index(
-                        name = "idx_products_id",
-                        columnList = "id"
+                        name = "idx_products_public_listing",
+                        columnList = "status, displayOrder, name, id"
                 )
         }
 )

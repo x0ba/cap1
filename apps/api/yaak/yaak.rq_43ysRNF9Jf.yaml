@@ -1,0 +1,33 @@
+type: http_request
+model: http_request
+id: rq_43ysRNF9Jf
+createdAt: 2026-06-27T18:38:42.211140
+updatedAt: 2026-06-27T18:40:37.679333
+workspaceId: wk_MkMYrNWyXo
+folderId: null
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Paginated Products Request
+sortPriority: -1782585522210.0
+url: ${[ BASE_URL ]}/api/public/v1/products?page=1&size=1
+urlParameters: []
+settingSendCookies:
+  enabled: false
+  value: true
+settingStoreCookies:
+  enabled: false
+  value: true
+settingValidateCertificates:
+  enabled: false
+  value: true
+settingFollowRedirects:
+  enabled: false
+  value: true
+settingRequestTimeout:
+  enabled: false
+  value: 0
