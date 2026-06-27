@@ -20,8 +20,8 @@ public class ProductService {
         return productRepository.findByStatus(ProductStatus.ACTIVE, pageable);
     }
 
-    public Product findActiveProduct(Long id) {
-        return productRepository.findByIdAndStatus(id, ProductStatus.ACTIVE)
+    public Product findActiveProduct(String slug) {
+        return productRepository.findBySlugAndStatus(slug, ProductStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 

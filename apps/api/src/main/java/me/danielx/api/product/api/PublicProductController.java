@@ -28,8 +28,8 @@ public class PublicProductController {
         return PageResponse.from(productService.findActiveProducts(pageable).map(PublicProductResponse::from));
     }
 
-    @GetMapping("/{id}")
-    public PublicProductResponse getProduct(@PathVariable Long id) {
-        return PublicProductResponse.from(productService.findActiveProduct(id));
+    @GetMapping("/{slug}")
+    public PublicProductResponse getProduct(@PathVariable String slug) {
+        return PublicProductResponse.from(productService.findActiveProduct(slug));
     }
 }
