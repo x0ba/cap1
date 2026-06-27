@@ -36,9 +36,11 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ProductType type;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
     @Column(nullable = false)
