@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import me.danielx.api.common.dto.PageResponse;
 import me.danielx.api.product.ProductService;
 import me.danielx.api.product.dto.PublicProductResponse;
@@ -73,6 +75,8 @@ public class PublicProductController {
   public PublicProductResponse getProduct(
       @Parameter(description = "URL-friendly product identifier", example = "premium-checking")
           @PathVariable
+          @Size(max = 80)
+          @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$")
           String slug) {
     return PublicProductResponse.from(productService.findActiveProduct(slug));
   }
