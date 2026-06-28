@@ -1,4 +1,4 @@
-package me.danielx.api.product;
+package me.danielx.api.products;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

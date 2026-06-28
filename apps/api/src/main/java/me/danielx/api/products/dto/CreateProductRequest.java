@@ -1,8 +1,8 @@
-package me.danielx.api.product.dto;
+package me.danielx.api.products.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import me.danielx.api.product.ProductStatus;
-import me.danielx.api.product.ProductType;
+import me.danielx.api.products.ProductStatus;
+import me.danielx.api.products.ProductType;
 
 public record CreateProductRequest(
     @NotBlank(message = "Slug is required") String slug,

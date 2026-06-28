@@ -1,4 +1,4 @@
-package me.danielx.api.product;
+package me.danielx.api.products;
 
 import java.util.List;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
-package me.danielx.api.product.dto;
+package me.danielx.api.products.dto;
 
-import me.danielx.api.product.Product;
-import me.danielx.api.product.ProductType;
+import me.danielx.api.products.Product;
+import me.danielx.api.products.ProductType;
 
 public record PublicProductResponse(
     Long id,

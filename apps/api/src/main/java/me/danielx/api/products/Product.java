@@ -1,4 +1,4 @@
-package me.danielx.api.product;
+package me.danielx.api.products;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -20,13 +20,18 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank(message = "Slug is required") @Size(max = 80) @Column(nullable = false, length = 80, unique = true)
+  @NotBlank(message = "Slug is required")
+  @Size(max = 80)
+  @Column(nullable = false, length = 80, unique = true)
   private String slug;
 
-  @NotBlank(message = "Name is required") @Size(max = 120) @Column(nullable = false, length = 120)
+  @NotBlank(message = "Name is required")
+  @Size(max = 120)
+  @Column(nullable = false, length = 120)
   private String name;
 
-  @Size(max = 300) @Column(length = 300)
+  @Size(max = 300)
+  @Column(length = 300)
   private String shortDescription;
 
   @Column(columnDefinition = "TEXT")

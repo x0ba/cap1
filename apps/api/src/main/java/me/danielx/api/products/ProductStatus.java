@@ -1,4 +1,4 @@
-package me.danielx.api.product;
+package me.danielx.api.products;
 
 public enum ProductStatus {
   DRAFT,
