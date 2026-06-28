@@ -20,8 +20,9 @@ public class ProductService {
   }
 
   public Product findActiveProduct(String slug) {
+    String normalizedSlug = slug.toLowerCase();
     return productRepository
-        .findBySlugAndStatus(slug, ProductStatus.ACTIVE)
+        .findBySlugAndStatus(normalizedSlug, ProductStatus.ACTIVE)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
   }
 

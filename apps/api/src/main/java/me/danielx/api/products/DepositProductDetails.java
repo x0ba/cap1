@@ -12,40 +12,29 @@ public class DepositProductDetails {
   @Column(name = "product_id", nullable = false)
   private Long productId;
 
-  @NotNull
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
   @MapsId
-  @JoinColumn(name = "product_id")
+  @JoinColumn(name = "product_id", nullable = false)
   private Product product;
 
   @NotNull
   @Column(nullable = false, precision = 10, scale = 5)
-  private BigDecimal APY;
+  private BigDecimal apy;
 
-  @NotNull
   @Column(nullable = false)
   private long minimumDeposit;
 
-  @NotNull
   @Column(nullable = false)
   private long minimumBalance;
 
-  @NotNull
   @Column(nullable = false)
   private long monthlyFee;
 
   protected DepositProductDetails() {}
 
   public DepositProductDetails(
-      Long productId,
-      Product product,
-      BigDecimal APY,
-      long minimumDeposit,
-      long minimumBalance,
-      long monthlyFee) {
-    this.productId = productId;
-    this.product = product;
-    this.APY = APY;
+      BigDecimal apy, long minimumDeposit, long minimumBalance, long monthlyFee) {
+    this.apy = Objects.requireNonNull(apy);
     this.minimumDeposit = minimumDeposit;
     this.minimumBalance = minimumBalance;
     this.monthlyFee = monthlyFee;
@@ -55,24 +44,24 @@ public class DepositProductDetails {
     return productId;
   }
 
-  public void setProductId(Long productId) {
-    this.productId = productId;
-  }
-
   public Product getProduct() {
     return product;
   }
 
-  public void setProduct(Product product) {
+  void setProduct(Product product) {
+    if (this.product != null && product != null && this.product != product) {
+      throw new IllegalStateException("Details are already assigned to another product");
+    }
+
     this.product = product;
   }
 
-  public BigDecimal getAPY() {
-    return APY;
+  public BigDecimal getApy() {
+    return apy;
   }
 
-  public void setAPY(BigDecimal APY) {
-    this.APY = APY;
+  public void setApy(BigDecimal apy) {
+    this.apy = Objects.requireNonNull(apy);
   }
 
   public long getMinimumDeposit() {
@@ -108,11 +97,11 @@ public class DepositProductDetails {
         && monthlyFee == that.monthlyFee
         && Objects.equals(productId, that.productId)
         && Objects.equals(product, that.product)
-        && Objects.equals(APY, that.APY);
+        && Objects.equals(apy, that.apy);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(productId, product, APY, minimumDeposit, minimumBalance, monthlyFee);
+    return Objects.hash(productId, product, apy, minimumDeposit, minimumBalance, monthlyFee);
   }
 }

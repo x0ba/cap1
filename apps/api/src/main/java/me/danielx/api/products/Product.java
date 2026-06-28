@@ -39,6 +39,13 @@ public class Product {
   @Enumerated(EnumType.STRING)
   private ProductType type;
 
+  @OneToOne(
+      mappedBy = "product",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  private DepositProductDetails depositDetails;
+
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private ProductStatus status;
@@ -83,7 +90,7 @@ public class Product {
     this.name = name;
     this.shortDescription = shortDescription;
     this.description = description;
-    this.type = type;
+    this.type = Objects.requireNonNull(type);
     this.status = status;
     this.featured = featured;
     this.applicationAvailable = applicationAvailable;
@@ -138,6 +145,13 @@ public class Product {
   }
 
   public void setType(ProductType type) {
+    Objects.requireNonNull(type, "Product type is required");
+
+    if (depositDetails != null && !isDepositProduct(type)) {
+      throw new IllegalStateException(
+          "Cannot change a product with deposit details to type " + type);
+    }
+
     this.type = type;
   }
 
@@ -195,6 +209,49 @@ public class Product {
 
   public void setVersion(long version) {
     this.version = version;
+  }
+
+  public DepositProductDetails getDepositDetails() {
+    return depositDetails;
+  }
+
+  public void setDepositDetails(DepositProductDetails details) {
+    Objects.requireNonNull(details, "Deposit details are required");
+
+    if (!isDepositProduct(type)) {
+      throw new IllegalStateException("Deposit details cannot be assigned to product type " + type);
+    }
+
+    if (details.getProduct() != null && details.getProduct() != this) {
+      throw new IllegalStateException("Deposit details are already assigned to another product");
+    }
+
+    if (depositDetails == details) {
+      return;
+    }
+
+    if (depositDetails != null) {
+      depositDetails.setProduct(null);
+    }
+
+    depositDetails = details;
+    details.setProduct(this);
+  }
+
+  public void removeDepositDetails() {
+    if (depositDetails == null) {
+      return;
+    }
+
+    depositDetails.setProduct(null);
+    depositDetails = null;
+  }
+
+  private static boolean isDepositProduct(ProductType type) {
+    return switch (type) {
+      case CHECKING, SAVINGS, MONEY_MARKET, CERTIFICATE -> true;
+      case CREDIT_CARD -> false;
+    };
   }
 
   @Override
