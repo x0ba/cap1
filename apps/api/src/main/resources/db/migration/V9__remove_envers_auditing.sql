@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS products_aud;
+DROP TABLE IF EXISTS revchanges;
+DROP TABLE IF EXISTS revinfo;
+DROP SEQUENCE IF EXISTS revinfo_seq;

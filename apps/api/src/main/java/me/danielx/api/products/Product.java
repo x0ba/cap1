@@ -5,10 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Objects;
-import org.hibernate.envers.Audited;
 
 @Entity
-@Audited
 @Table(
     name = "products",
     indexes = {
