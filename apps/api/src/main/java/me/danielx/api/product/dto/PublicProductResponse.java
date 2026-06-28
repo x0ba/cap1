@@ -8,6 +8,7 @@ public record PublicProductResponse(
     String slug,
     String name,
     String shortDescription,
+    String description,
     ProductType type,
     boolean featured,
     boolean applicationAvailable) {
@@ -17,6 +18,7 @@ public record PublicProductResponse(
         product.getSlug(),
         product.getName(),
         product.getShortDescription(),
+        product.getDescription(),
         product.getType(),
         product.isFeatured(),
         product.isApplicationAvailable());

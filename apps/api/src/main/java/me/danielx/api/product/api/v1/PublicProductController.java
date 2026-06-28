@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,8 +23,7 @@ import java.util.Set;
 @RequestMapping("/api/public/v1/products")
 public class PublicProductController {
   private final ProductService productService;
-  private static final Set<String> ALLOWED_SORT_FIELDS =
-      Set.of("displayOrder", "name", "id", "featured");
+  private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("displayOrder", "name", "id");
 
   private void validateSort(Pageable pageable) {
     for (Sort.Order order : pageable.getSort()) {
@@ -71,6 +71,7 @@ public class PublicProductController {
     @ApiResponse(responseCode = "200", description = "Product returned successfully"),
     @ApiResponse(responseCode = "404", description = "Product not found")
   })
+  @Validated
   @GetMapping("/{slug}")
   public PublicProductResponse getProduct(
       @Parameter(description = "URL-friendly product identifier", example = "premium-checking")
