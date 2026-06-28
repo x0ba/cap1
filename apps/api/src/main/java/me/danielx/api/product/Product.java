@@ -72,7 +72,21 @@ public class Product {
     protected Product() {
     }
 
-    public Product(Long id, String slug, String name, String shortDescription, String description, ProductType type, ProductStatus status, boolean featured, boolean applicationAvailable, int displayOrder, Instant createdAt, Instant updatedAt, long version) {
+    public Product(
+            Long id,
+            String slug,
+            String name,
+            String shortDescription,
+            String description,
+            ProductType type,
+            ProductStatus status,
+            boolean featured,
+            boolean applicationAvailable,
+            int displayOrder,
+            Instant createdAt,
+            Instant updatedAt,
+            long version
+    ) {
         this.id = id;
         this.slug = slug;
         this.name = name;
