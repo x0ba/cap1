@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_43ysRNF9Jf
 createdAt: 2026-06-27T18:38:42.211140
-updatedAt: 2026-06-27T18:40:37.679333
+updatedAt: 2026-06-27T23:05:54.468789
 workspaceId: wk_MkMYrNWyXo
 folderId: null
 authentication: {}
@@ -14,7 +14,7 @@ headers: []
 method: GET
 name: Paginated Products Request
 sortPriority: -1782585522210.0
-url: ${[ BASE_URL ]}/api/public/v1/products?page=1&size=1
+url: ${[ BASE_URL ]}/api/public/v1/products
 urlParameters: []
 settingSendCookies:
   enabled: false
