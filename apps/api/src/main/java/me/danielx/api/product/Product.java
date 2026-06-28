@@ -1,6 +1,8 @@
 package me.danielx.api.product;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.hibernate.envers.Audited;
 
 import java.time.Instant;
@@ -23,16 +25,21 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Slug is required")
+    @Size(max = 80)
+    @Column(nullable = false, length = 80, unique = true)
     private String slug;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Name is required")
+    @Size(max = 120)
+    @Column(nullable = false, length = 120)
     private String name;
 
-    @Column(nullable = true)
+    @Size(max = 300)
+    @Column(length = 300)
     private String shortDescription;
 
-    @Column(nullable = true)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
