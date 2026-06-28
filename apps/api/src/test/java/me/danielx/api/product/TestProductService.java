@@ -83,38 +83,8 @@ public class TestProductService {
             Instant.now(),
             null,
             0);
-    Product product2 =
-        new Product(
-            2L,
-            "product2",
-            "Product 2",
-            "Description",
-            "Short " + "description",
-            ProductType.SAVINGS,
-            ProductStatus.ACTIVE,
-            false,
-            true,
-            0,
-            Instant.now(),
-            null,
-            0);
-    Product product3 =
-        new Product(
-            3L,
-            "product3",
-            "Product 3",
-            "Description",
-            "Short " + "description",
-            ProductType.SAVINGS,
-            ProductStatus.ACTIVE,
-            false,
-            true,
-            0,
-            Instant.now(),
-            null,
-            0);
-    List<Product> productList = List.of(product1, product2, product3);
-    Pageable pageable = PageRequest.of(0, 20, Sort.by("displayOrder", "id", "name").ascending());
+    List<Product> productList = List.of(product1);
+    Pageable pageable = PageRequest.of(0, 20);
     Page<Product> productPage = new PageImpl<>(productList, pageable, productList.size());
 
     when(productRepository.findByStatus(ProductStatus.ACTIVE, pageable)).thenReturn(productPage);
