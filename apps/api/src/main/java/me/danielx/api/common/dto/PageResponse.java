@@ -1,25 +1,17 @@
 package me.danielx.api.common.dto;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public record PageResponse<T>(
-        List<T> items,
-        int page,
-        int size,
-        long totalItems,
-        int totalPages,
-        boolean hasNext
-) {
-    public static <T> PageResponse<T> from(Page<T> page) {
-        return new PageResponse<T>(
-                page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
-                page.hasNext()
-        );
-    }
+    List<T> items, int page, int size, long totalItems, int totalPages, boolean hasNext) {
+  public static <T> PageResponse<T> from(Page<T> page) {
+    return new PageResponse<T>(
+        page.getContent(),
+        page.getNumber(),
+        page.getSize(),
+        page.getTotalElements(),
+        page.getTotalPages(),
+        page.hasNext());
+  }
 }
