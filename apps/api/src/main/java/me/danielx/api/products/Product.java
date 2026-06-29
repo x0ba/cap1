@@ -12,7 +12,9 @@ import java.util.Objects;
     indexes = {
       @Index(name = "idx_products_public_listing", columnList = "status, displayOrder, name, id")
     })
-public class Product {
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "entity_kind")
+public abstract class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,16 +37,9 @@ public class Product {
   @Column(columnDefinition = "TEXT")
   private String description;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "type")
   @Enumerated(EnumType.STRING)
   private ProductType type;
-
-  @OneToOne(
-      mappedBy = "product",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      fetch = FetchType.LAZY)
-  private DepositProductDetails depositDetails;
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
@@ -65,14 +60,9 @@ public class Product {
   @Column(nullable = true)
   private Instant updatedAt;
 
-  @Version
-  @Column(nullable = false)
-  private long version;
-
   protected Product() {}
 
   public Product(
-      Long id,
       String slug,
       String name,
       String shortDescription,
@@ -81,10 +71,7 @@ public class Product {
       ProductStatus status,
       boolean featured,
       boolean applicationAvailable,
-      int displayOrder,
-      Instant createdAt,
-      Instant updatedAt,
-      long version) {
+      int displayOrder) {
     this.id = id;
     this.slug = slug;
     this.name = name;
@@ -95,9 +82,8 @@ public class Product {
     this.featured = featured;
     this.applicationAvailable = applicationAvailable;
     this.displayOrder = displayOrder;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.version = version;
+    this.createdAt = Instant.now();
+    this.updatedAt = null;
   }
 
   public Long getId() {
@@ -142,17 +128,6 @@ public class Product {
 
   public ProductType getType() {
     return type;
-  }
-
-  public void setType(ProductType type) {
-    Objects.requireNonNull(type, "Product type is required");
-
-    if (depositDetails != null && !isDepositProduct(type)) {
-      throw new IllegalStateException(
-          "Cannot change a product with deposit details to type " + type);
-    }
-
-    this.type = type;
   }
 
   public ProductStatus getStatus() {
@@ -203,57 +178,6 @@ public class Product {
     this.updatedAt = updatedAt;
   }
 
-  public long getVersion() {
-    return version;
-  }
-
-  public void setVersion(long version) {
-    this.version = version;
-  }
-
-  public DepositProductDetails getDepositDetails() {
-    return depositDetails;
-  }
-
-  public void setDepositDetails(DepositProductDetails details) {
-    Objects.requireNonNull(details, "Deposit details are required");
-
-    if (!isDepositProduct(type)) {
-      throw new IllegalStateException("Deposit details cannot be assigned to product type " + type);
-    }
-
-    if (details.getProduct() != null && details.getProduct() != this) {
-      throw new IllegalStateException("Deposit details are already assigned to another product");
-    }
-
-    if (depositDetails == details) {
-      return;
-    }
-
-    if (depositDetails != null) {
-      depositDetails.setProduct(null);
-    }
-
-    depositDetails = details;
-    details.setProduct(this);
-  }
-
-  public void removeDepositDetails() {
-    if (depositDetails == null) {
-      return;
-    }
-
-    depositDetails.setProduct(null);
-    depositDetails = null;
-  }
-
-  private static boolean isDepositProduct(ProductType type) {
-    return switch (type) {
-      case CHECKING, SAVINGS, MONEY_MARKET, CERTIFICATE -> true;
-      case CREDIT_CARD -> false;
-    };
-  }
-
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
@@ -261,7 +185,6 @@ public class Product {
     return featured == product.featured
         && applicationAvailable == product.applicationAvailable
         && displayOrder == product.displayOrder
-        && version == product.version
         && Objects.equals(id, product.id)
         && Objects.equals(slug, product.slug)
         && Objects.equals(name, product.name)
@@ -287,7 +210,6 @@ public class Product {
         applicationAvailable,
         displayOrder,
         createdAt,
-        updatedAt,
-        version);
+        updatedAt);
   }
 }

@@ -5,5 +5,12 @@ public enum ProductType {
   SAVINGS,
   MONEY_MARKET,
   CERTIFICATE,
-  CREDIT_CARD,
+  CREDIT_CARD;
+
+  public boolean isDeposit() {
+    return switch (this) {
+      case CHECKING, SAVINGS, MONEY_MARKET, CERTIFICATE -> true;
+      case CREDIT_CARD -> false;
+    };
+  }
 }

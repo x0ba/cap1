@@ -6,16 +6,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "deposit_product_details")
-public class DepositProductDetails {
-  @Id
-  @Column(name = "product_id", nullable = false)
-  private Long productId;
-
-  @OneToOne(fetch = FetchType.LAZY, optional = false)
-  @MapsId
-  @JoinColumn(name = "product_id", nullable = false)
-  private Product product;
+@Table(name = "deposit_products")
+@DiscriminatorValue("DEPOSIT")
+public class DepositProduct extends Product {
 
   @NotNull
   @Column(nullable = false, precision = 10, scale = 5)
@@ -30,30 +23,46 @@ public class DepositProductDetails {
   @Column(nullable = false)
   private long monthlyFee;
 
-  protected DepositProductDetails() {}
+  protected DepositProduct() {}
 
-  public DepositProductDetails(
-      BigDecimal apy, long minimumDeposit, long minimumBalance, long monthlyFee) {
+  public DepositProduct(
+      String slug,
+      String name,
+      String shortDescription,
+      String description,
+      ProductType type,
+      ProductStatus status,
+      boolean featured,
+      boolean applicationAvailable,
+      int displayOrder,
+      BigDecimal apy,
+      long minimumDeposit,
+      long monthlyFee,
+      long minimumBalance) {
+    super(
+        slug,
+        name,
+        shortDescription,
+        description,
+        requireDepositType(type),
+        status,
+        featured,
+        applicationAvailable,
+        displayOrder);
     this.apy = Objects.requireNonNull(apy);
     this.minimumDeposit = minimumDeposit;
-    this.minimumBalance = minimumBalance;
     this.monthlyFee = monthlyFee;
+    this.minimumBalance = minimumBalance;
   }
 
-  public Long getProductId() {
-    return productId;
-  }
+  private static ProductType requireDepositType(ProductType type) {
+    Objects.requireNonNull(type, "Product type is required");
 
-  public Product getProduct() {
-    return product;
-  }
-
-  void setProduct(Product product) {
-    if (this.product != null && product != null && this.product != product) {
-      throw new IllegalStateException("Details are already assigned to another product");
+    if (!type.isDeposit()) {
+      throw new IllegalArgumentException(type + " is not a deposit product type");
     }
 
-    this.product = product;
+    return type;
   }
 
   public BigDecimal getApy() {
@@ -91,17 +100,15 @@ public class DepositProductDetails {
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
-    DepositProductDetails that = (DepositProductDetails) o;
+    DepositProduct that = (DepositProduct) o;
     return minimumDeposit == that.minimumDeposit
         && minimumBalance == that.minimumBalance
         && monthlyFee == that.monthlyFee
-        && Objects.equals(productId, that.productId)
-        && Objects.equals(product, that.product)
         && Objects.equals(apy, that.apy);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(productId, product, apy, minimumDeposit, minimumBalance, monthlyFee);
+    return Objects.hash(apy, minimumDeposit, minimumBalance, monthlyFee);
   }
 }
