@@ -3,7 +3,7 @@ package me.danielx.api.products;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.Instant;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -25,28 +25,14 @@ public class TestProductService {
   @Test
   void findActiveProductReturnsMatchingActiveProduct() {
     String slug = "test-product";
-    Product product =
-        new Product(
-            1L,
-            slug,
-            "Test Product",
-            "Short description",
-            "Description",
-            ProductType.SAVINGS,
-            ProductStatus.ACTIVE,
-            false,
-            true,
-            0,
-            Instant.now(),
-            null,
-            0);
+    Product product = depositProduct(slug);
 
     when(productRepository.findBySlugAndStatus(slug, ProductStatus.ACTIVE))
         .thenReturn(Optional.of(product));
 
     Product result = productService.findActiveProduct(slug);
 
-    assertEquals(product, result);
+    assertSame(product, result);
     verify(productRepository).findBySlugAndStatus(slug, ProductStatus.ACTIVE);
   }
 
@@ -68,22 +54,21 @@ public class TestProductService {
 
   @Test
   void findActiveProductsReturnsPageOfActiveProducts() {
-    Product product1 =
-        new Product(
-            1L,
-            "product1",
-            "Product 1",
-            "Description",
-            "Short " + "description",
-            ProductType.SAVINGS,
+    Product product =
+        new CreditCardProduct(
+            "cash-back-card",
+            "Cash Back Card",
+            "Earn cash back on every purchase",
+            "A credit card with unlimited cash-back rewards.",
             ProductStatus.ACTIVE,
-            false,
             true,
-            0,
-            Instant.now(),
-            null,
-            0);
-    List<Product> productList = List.of(product1);
+            true,
+            1,
+            CreditCardRewardCategory.ALL_PURCHASES,
+            new BigDecimal("1.500"),
+            0L);
+
+    List<Product> productList = List.of(product);
     Pageable pageable = PageRequest.of(0, 20);
     Page<Product> productPage = new PageImpl<>(productList, pageable, productList.size());
 
@@ -93,5 +78,22 @@ public class TestProductService {
 
     assertSame(productPage, result);
     verify(productRepository).findByStatus(ProductStatus.ACTIVE, pageable);
+  }
+
+  private static DepositProduct depositProduct(String slug) {
+    return new DepositProduct(
+        slug,
+        "Test Savings Account",
+        "A savings account",
+        "A savings account used by the product service test.",
+        ProductType.SAVINGS,
+        ProductStatus.ACTIVE,
+        false,
+        true,
+        0,
+        new BigDecimal("4.25000"),
+        100L,
+        0L,
+        500L);
   }
 }
