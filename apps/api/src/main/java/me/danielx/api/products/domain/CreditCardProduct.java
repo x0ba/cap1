@@ -1,27 +1,23 @@
-package me.danielx.api.products;
+package me.danielx.api.products.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "credit_card_products")
 @DiscriminatorValue("CREDIT_CARD")
 public class CreditCardProduct extends Product {
-  @NotNull
-  @Column(nullable = false)
+  @NotNull @Column(nullable = false)
   private CreditCardRewardCategory rewardCategory;
 
-  @NotNull
-  @Column(nullable = false, precision = 6, scale = 3)
+  @NotNull @Column(nullable = false, precision = 6, scale = 3)
   private BigDecimal rewardRate;
 
-  @NotNull
-  @Column(nullable = false)
+  @NotNull @Column(nullable = false)
   private Long spendingCap;
 
   protected CreditCardProduct() {}

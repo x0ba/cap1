@@ -1,17 +1,18 @@
-package me.danielx.api.products;
+package me.danielx.api.products.application;
 
-import java.util.List;
+import java.util.Locale;
+import me.danielx.api.products.domain.Product;
+import me.danielx.api.products.domain.ProductStatus;
+import me.danielx.api.products.persistence.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class ProductService {
+public class PublicProductQueryService {
   private final ProductRepository productRepository;
 
-  public ProductService(ProductRepository productRepository) {
+  public PublicProductQueryService(ProductRepository productRepository) {
     this.productRepository = productRepository;
   }
 
@@ -20,13 +21,9 @@ public class ProductService {
   }
 
   public Product findActiveProduct(String slug) {
-    String normalizedSlug = slug.toLowerCase();
+    String normalizedSlug = slug.toLowerCase(Locale.ROOT);
     return productRepository
         .findBySlugAndStatus(normalizedSlug, ProductStatus.ACTIVE)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-  }
-
-  public List<Product> findAllProducts() {
-    return productRepository.findAll();
+        .orElseThrow(ProductNotFoundException::new);
   }
 }

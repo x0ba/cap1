@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.Instant;
+import me.danielx.api.products.application.ProductNotFoundException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  @ExceptionHandler(ProductNotFoundException.class)
+  public ProblemDetail handleProductNotFoundException(
+      ProductNotFoundException exception, HttpServletRequest request) {
+    ProblemDetail problem =
+        ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+
+    problem.setTitle("Request failed");
+    addCommonProperties(problem, request);
+
+    return problem;
+  }
+
   @ExceptionHandler(ResponseStatusException.class)
   public ProblemDetail handleResponseStatusException(
       ResponseStatusException exception, HttpServletRequest request) {

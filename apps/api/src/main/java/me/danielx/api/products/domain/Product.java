@@ -1,6 +1,17 @@
-package me.danielx.api.products;
+package me.danielx.api.products.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
@@ -20,18 +31,13 @@ public abstract class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank(message = "Slug is required")
-  @Size(max = 80)
-  @Column(nullable = false, length = 80, unique = true)
+  @NotBlank(message = "Slug is required") @Size(max = 80) @Column(nullable = false, length = 80, unique = true)
   private String slug;
 
-  @NotBlank(message = "Name is required")
-  @Size(max = 120)
-  @Column(nullable = false, length = 120)
+  @NotBlank(message = "Name is required") @Size(max = 120) @Column(nullable = false, length = 120)
   private String name;
 
-  @Size(max = 300)
-  @Column(length = 300)
+  @Size(max = 300) @Column(length = 300)
   private String shortDescription;
 
   @Column(columnDefinition = "TEXT")
@@ -72,7 +78,6 @@ public abstract class Product {
       boolean featured,
       boolean applicationAvailable,
       int displayOrder) {
-    this.id = id;
     this.slug = slug;
     this.name = name;
     this.shortDescription = shortDescription;

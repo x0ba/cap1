@@ -1,26 +1,37 @@
-package me.danielx.api.products;
+package me.danielx.api.products.application;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import me.danielx.api.products.domain.CreditCardProduct;
+import me.danielx.api.products.domain.CreditCardRewardCategory;
+import me.danielx.api.products.domain.DepositProduct;
+import me.danielx.api.products.domain.Product;
+import me.danielx.api.products.domain.ProductStatus;
+import me.danielx.api.products.domain.ProductType;
+import me.danielx.api.products.persistence.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
-public class TestProductService {
+class PublicProductQueryServiceTest {
 
   @Mock ProductRepository productRepository;
 
-  @InjectMocks ProductService productService;
+  @InjectMocks PublicProductQueryService productQueryService;
 
   @Test
   void findActiveProductReturnsMatchingActiveProduct() {
@@ -30,7 +41,7 @@ public class TestProductService {
     when(productRepository.findBySlugAndStatus(slug, ProductStatus.ACTIVE))
         .thenReturn(Optional.of(product));
 
-    Product result = productService.findActiveProduct(slug);
+    Product result = productQueryService.findActiveProduct(slug);
 
     assertSame(product, result);
     verify(productRepository).findBySlugAndStatus(slug, ProductStatus.ACTIVE);
@@ -43,12 +54,11 @@ public class TestProductService {
     when(productRepository.findBySlugAndStatus(slug, ProductStatus.ACTIVE))
         .thenReturn(Optional.empty());
 
-    ResponseStatusException exception =
-        assertThrows(ResponseStatusException.class, () -> productService.findActiveProduct(slug));
+    ProductNotFoundException exception =
+        assertThrows(
+            ProductNotFoundException.class, () -> productQueryService.findActiveProduct(slug));
 
-    assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-    assertEquals("Product not found", exception.getReason());
-
+    assertEquals("Product not found", exception.getMessage());
     verify(productRepository).findBySlugAndStatus(slug, ProductStatus.ACTIVE);
   }
 
@@ -74,7 +84,7 @@ public class TestProductService {
 
     when(productRepository.findByStatus(ProductStatus.ACTIVE, pageable)).thenReturn(productPage);
 
-    Page<Product> result = productService.findActiveProducts(pageable);
+    Page<Product> result = productQueryService.findActiveProducts(pageable);
 
     assertSame(productPage, result);
     verify(productRepository).findByStatus(ProductStatus.ACTIVE, pageable);

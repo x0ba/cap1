@@ -7,16 +7,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import me.danielx.api.products.ProductService;
+import me.danielx.api.products.application.ProductNotFoundException;
+import me.danielx.api.products.application.PublicProductQueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(
     properties =
@@ -34,7 +33,7 @@ class ApiDocumentationTests {
 
   @Autowired MockMvc mockMvc;
 
-  @MockitoBean ProductService productService;
+  @MockitoBean PublicProductQueryService productQueryService;
 
   @Test
   void openApiContractDocumentsPublicProductEndpoints() throws Exception {
@@ -91,8 +90,8 @@ class ApiDocumentationTests {
 
   @Test
   void missingProductMatchesDocumentedProblemResponse() throws Exception {
-    when(productService.findActiveProduct("missing-product"))
-        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    when(productQueryService.findActiveProduct("missing-product"))
+        .thenThrow(new ProductNotFoundException());
 
     mockMvc
         .perform(get("/api/public/v1/products/missing-product"))

@@ -1,6 +1,9 @@
-package me.danielx.api.products;
+package me.danielx.api.products.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -10,8 +13,7 @@ import java.util.Objects;
 @DiscriminatorValue("DEPOSIT")
 public class DepositProduct extends Product {
 
-  @NotNull
-  @Column(nullable = false, precision = 10, scale = 5)
+  @NotNull @Column(nullable = false, precision = 10, scale = 5)
   private BigDecimal apy;
 
   @Column(nullable = false)

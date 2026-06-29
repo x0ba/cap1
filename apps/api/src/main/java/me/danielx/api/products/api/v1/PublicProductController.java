@@ -6,9 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
 import me.danielx.api.common.dto.PageResponse;
-import me.danielx.api.products.ProductService;
-import me.danielx.api.products.dto.PublicProductResponse;
+import me.danielx.api.products.api.v1.dto.PublicProductResponse;
+import me.danielx.api.products.application.PublicProductQueryService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -17,12 +18,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
-
 @RestController
 @RequestMapping("/api/public/v1/products")
 public class PublicProductController {
-  private final ProductService productService;
+  private final PublicProductQueryService productQueryService;
   private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("displayOrder", "name", "id");
 
   private void validateSort(Pageable pageable) {
@@ -35,8 +34,8 @@ public class PublicProductController {
     }
   }
 
-  public PublicProductController(ProductService productService) {
-    this.productService = productService;
+  public PublicProductController(PublicProductQueryService productQueryService) {
+    this.productQueryService = productQueryService;
   }
 
   @Operation(
@@ -61,7 +60,7 @@ public class PublicProductController {
     validateSort(pageable);
 
     return PageResponse.from(
-        productService.findActiveProducts(pageable).map(PublicProductResponse::from));
+        productQueryService.findActiveProducts(pageable).map(PublicProductResponse::from));
   }
 
   @Operation(
@@ -79,9 +78,8 @@ public class PublicProductController {
   public PublicProductResponse getProduct(
       @Parameter(description = "URL-friendly product identifier", example = "premium-checking")
           @PathVariable
-          @Size(max = 80)
-          @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$")
+          @Size(max = 80) @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$")
           String slug) {
-    return PublicProductResponse.from(productService.findActiveProduct(slug));
+    return PublicProductResponse.from(productQueryService.findActiveProduct(slug));
   }
 }
