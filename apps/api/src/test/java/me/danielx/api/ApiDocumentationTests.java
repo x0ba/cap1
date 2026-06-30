@@ -76,6 +76,50 @@ class ApiDocumentationTests {
   }
 
   @Test
+  void openApiContractDocumentsPolymorphicProductDetails() throws Exception {
+    mockMvc
+        .perform(get("/v3/api-docs"))
+        .andExpect(status().isOk())
+        .andExpect(
+            jsonPath(
+                    "$.components.schemas.PublicProductDetailResponse.properties"
+                        + ".productDetails.oneOf[*]['$ref']")
+                .value(
+                    containsInAnyOrder(
+                        "#/components/schemas/DepositProductDetails",
+                        "#/components/schemas/CreditCardProductDetails")))
+        .andExpect(
+            jsonPath("$.components.schemas.ProductDetails.discriminator.propertyName")
+                .value("kind"))
+        .andExpect(
+            jsonPath("$.components.schemas.ProductDetails.discriminator.mapping.DEPOSIT")
+                .value("#/components/schemas/DepositProductDetails"))
+        .andExpect(
+            jsonPath("$.components.schemas.ProductDetails.discriminator.mapping.CREDIT_CARD")
+                .value("#/components/schemas/CreditCardProductDetails"))
+        .andExpect(
+            jsonPath("$.components.schemas.DepositProductDetails.required[*]")
+                .value(
+                    containsInAnyOrder(
+                        "kind", "apy", "minimumDeposit", "minimumBalance", "monthlyFee")))
+        .andExpect(
+            jsonPath("$.components.schemas.CreditCardProductDetails.required[*]")
+                .value(
+                    containsInAnyOrder(
+                        "kind", "rewardCategory", "rewardRate", "spendingCap")))
+        .andExpect(
+            jsonPath(
+                    "$.components.schemas.DepositProductDetails.allOf[1]"
+                        + ".properties.kind.enum[0]")
+                .value("DEPOSIT"))
+        .andExpect(
+            jsonPath(
+                    "$.components.schemas.CreditCardProductDetails.allOf[1]"
+                        + ".properties.kind.enum[0]")
+                .value("CREDIT_CARD"));
+  }
+
+  @Test
   void invalidSlugMatchesDocumentedProblemResponse() throws Exception {
     mockMvc
         .perform(get("/api/public/v1/products/INVALID"))
