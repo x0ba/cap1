@@ -1,4 +1,4 @@
-package me.danielx.api.products.application;
+package me.danielx.api.products;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;

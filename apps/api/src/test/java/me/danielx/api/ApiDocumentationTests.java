@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import me.danielx.api.products.application.ProductNotFoundException;
-import me.danielx.api.products.application.PublicProductQueryService;
+import me.danielx.api.products.ProductNotFoundException;
+import me.danielx.api.products.PublicProductQueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,7 +54,7 @@ class ApiDocumentationTests {
             jsonPath(
                     "$['paths']['/api/public/v1/products']['get']['responses']['200']"
                         + ".content['application/json'].schema['$ref']")
-                .value("#/components/schemas/PageResponsePublicProduct"))
+                .value("#/components/schemas/PageResponsePublicProductSummaryResponse"))
         .andExpect(
             jsonPath(
                     "$['paths']['/api/public/v1/products']['get']['responses']['400']"
@@ -66,10 +66,7 @@ class ApiDocumentationTests {
                         + ".content['application/problem+json'].schema['$ref']")
                 .value("#/components/schemas/ApiProblem"))
         .andExpect(
-            jsonPath("$.components.schemas.PublicProduct.required[*]")
-                .value(
-                    containsInAnyOrder(
-                        "id", "slug", "name", "type", "featured", "applicationAvailable")))
+            jsonPath("$.components.schemas.PublicProductSummaryResponse.properties.id").doesNotExist())
         .andExpect(
             jsonPath("$.components.schemas.ApiProblem.required[*]")
                 .value(containsInAnyOrder("title", "status", "detail", "instance", "timestamp")));
@@ -104,9 +101,7 @@ class ApiDocumentationTests {
                         "kind", "apy", "minimumDeposit", "minimumBalance", "monthlyFee")))
         .andExpect(
             jsonPath("$.components.schemas.CreditCardProductDetails.required[*]")
-                .value(
-                    containsInAnyOrder(
-                        "kind", "rewardCategory", "rewardRate", "spendingCap")))
+                .value(containsInAnyOrder("kind", "rewardCategory", "rewardRate", "spendingCap")))
         .andExpect(
             jsonPath(
                     "$.components.schemas.DepositProductDetails.allOf[1]"

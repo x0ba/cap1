@@ -4,7 +4,6 @@ import me.danielx.api.products.domain.Product;
 import me.danielx.api.products.domain.ProductType;
 
 public record PublicProductSummaryResponse(
-    Long id,
     String slug,
     String name,
     String shortDescription,
@@ -13,7 +12,6 @@ public record PublicProductSummaryResponse(
     boolean applicationAvailable) {
   public static PublicProductSummaryResponse from(Product product) {
     return new PublicProductSummaryResponse(
-        product.getId(),
         product.getSlug(),
         product.getName(),
         product.getShortDescription(),

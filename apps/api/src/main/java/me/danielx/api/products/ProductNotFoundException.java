@@ -1,4 +1,4 @@
-package me.danielx.api.products.application;
+package me.danielx.api.products;
 
 public class ProductNotFoundException extends RuntimeException {
   public ProductNotFoundException() {

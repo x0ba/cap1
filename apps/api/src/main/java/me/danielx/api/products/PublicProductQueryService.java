@@ -1,4 +1,4 @@
-package me.danielx.api.products.application;
+package me.danielx.api.products;
 
 import java.util.Locale;
 import me.danielx.api.products.domain.Product;

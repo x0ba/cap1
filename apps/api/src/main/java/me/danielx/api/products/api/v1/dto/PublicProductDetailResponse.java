@@ -5,7 +5,6 @@ import me.danielx.api.products.domain.Product;
 import me.danielx.api.products.domain.ProductType;
 
 public record PublicProductDetailResponse(
-    Long id,
     String slug,
     String name,
     String shortDescription,
@@ -22,7 +21,6 @@ public record PublicProductDetailResponse(
         ProductDetailsResponse productDetails) {
   public static PublicProductDetailResponse from(Product product) {
     return new PublicProductDetailResponse(
-        product.getId(),
         product.getSlug(),
         product.getName(),
         product.getShortDescription(),

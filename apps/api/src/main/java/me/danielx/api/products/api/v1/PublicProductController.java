@@ -15,7 +15,7 @@ import me.danielx.api.common.dto.ApiProblemResponse;
 import me.danielx.api.common.dto.PageResponse;
 import me.danielx.api.products.api.v1.dto.PublicProductDetailResponse;
 import me.danielx.api.products.api.v1.dto.PublicProductSummaryResponse;
-import me.danielx.api.products.application.PublicProductQueryService;
+import me.danielx.api.products.PublicProductQueryService;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,8 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.print.attribute.standard.Media;
 
 @Tag(name = "Public Products")
 @RestController
