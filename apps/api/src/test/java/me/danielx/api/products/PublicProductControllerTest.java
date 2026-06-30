@@ -119,8 +119,9 @@ public class PublicProductControllerTest {
   }
 
   @Test
-  void testReturns404WhenServiceThrowsProductNotFoundException() throws Exception {
+  void testGetProductReturns404WhenProductNotFound() throws Exception {
     String slug = "non-existent-product";
+
     when(productQueryService.findActiveProduct(slug)).thenThrow(new ProductNotFoundException());
 
     mockMvc
@@ -131,5 +132,19 @@ public class PublicProductControllerTest {
         .andExpect(jsonPath("$.instance").value("/api/public/v1/products/" + slug));
 
     verify(productQueryService).findActiveProduct(slug);
+  }
+
+  @Test
+  void testGetProductReturns400WhenInvalidSlug() throws Exception {
+    String slug = "invalid@slug";
+
+    when(productQueryService.findActiveProduct(slug)).thenThrow(new IllegalArgumentException());
+
+    mockMvc
+        .perform(get("/api/public/v1/products/{slug}", slug))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.title").value("Invalid request"))
+        .andExpect(jsonPath("$.detail").value("Request validation failed"))
+        .andExpect(jsonPath("$.instance").value("/api/public/v1/products/" + slug));
   }
 }
