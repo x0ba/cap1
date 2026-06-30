@@ -4,10 +4,11 @@ import me.danielx.api.products.api.v1.PublicProductController;
 import me.danielx.api.products.api.v1.dto.PublicProductDetailResponse;
 import me.danielx.api.products.domain.CreditCardProduct;
 import me.danielx.api.products.domain.CreditCardRewardCategory;
+import me.danielx.api.products.domain.DepositProduct;
 import me.danielx.api.products.domain.Product;
 import me.danielx.api.products.domain.ProductStatus;
+import me.danielx.api.products.domain.ProductType;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -31,7 +32,7 @@ public class PublicProductControllerTest {
   @MockitoBean private PublicProductQueryService productQueryService;
 
   @Test
-  void testGetProductGetsProductWithMatchingSlug() throws Exception {
+  void testGetProductGetsCreditCardProductWithMatchingSlug() throws Exception {
     String slug = "test-credit-card";
     Product product =
         new CreditCardProduct(
@@ -69,6 +70,65 @@ public class PublicProductControllerTest {
                 .value(CreditCardRewardCategory.ALL_PURCHASES.name()))
         .andExpect(jsonPath("$.productDetails.rewardRate").value(0.03))
         .andExpect(jsonPath("$.productDetails.spendingCap").value(500));
+
+    verify(productQueryService).findActiveProduct(slug);
+  }
+
+  @Test
+  void testGetProductGetsDepositProductWithMatchingSlug() throws Exception {
+    String slug = "test-savings-account";
+    Product product =
+        new DepositProduct(
+            slug,
+            "Test Savings Account",
+            "Test Savings Account",
+            "A test savings account with a competitive APY.",
+            ProductType.SAVINGS,
+            ProductStatus.ACTIVE,
+            false,
+            true,
+            1,
+            new BigDecimal("4.25000"),
+            100L,
+            5L,
+            500L);
+    PublicProductDetailResponse expectedResponse = PublicProductDetailResponse.from(product);
+
+    when(productQueryService.findActiveProduct(slug)).thenReturn(product);
+
+    mockMvc
+        .perform(get("/api/public/v1/products/{slug}", slug))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.*", hasSize(8)))
+        .andExpect(jsonPath("$.slug").value(expectedResponse.slug()))
+        .andExpect(jsonPath("$.name").value(expectedResponse.name()))
+        .andExpect(jsonPath("$.shortDescription").value(expectedResponse.shortDescription()))
+        .andExpect(jsonPath("$.description").value(expectedResponse.description()))
+        .andExpect(jsonPath("$.type").value(expectedResponse.type().name()))
+        .andExpect(jsonPath("$.featured").value(expectedResponse.featured()))
+        .andExpect(
+            jsonPath("$.applicationAvailable").value(expectedResponse.applicationAvailable()))
+        .andExpect(jsonPath("$.productDetails.*", hasSize(5)))
+        .andExpect(jsonPath("$.productDetails.kind").value("DEPOSIT"))
+        .andExpect(jsonPath("$.productDetails.apy").value(4.25000))
+        .andExpect(jsonPath("$.productDetails.minimumDeposit").value(100))
+        .andExpect(jsonPath("$.productDetails.monthlyFee").value(5))
+        .andExpect(jsonPath("$.productDetails.minimumBalance").value(500));
+
+    verify(productQueryService).findActiveProduct(slug);
+  }
+
+  @Test
+  void testReturns404WhenServiceThrowsProductNotFoundException() throws Exception {
+    String slug = "non-existent-product";
+    when(productQueryService.findActiveProduct(slug)).thenThrow(new ProductNotFoundException());
+
+    mockMvc
+        .perform(get("/api/public/v1/products/{slug}", slug))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.title").value("Request failed"))
+        .andExpect(jsonPath("$.detail").value("Product not found"))
+        .andExpect(jsonPath("$.instance").value("/api/public/v1/products/" + slug));
 
     verify(productQueryService).findActiveProduct(slug);
   }
