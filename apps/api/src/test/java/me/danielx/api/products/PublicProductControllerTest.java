@@ -32,7 +32,7 @@ public class PublicProductControllerTest {
   @MockitoBean private PublicProductQueryService productQueryService;
 
   @Test
-  void testGetProductGetsCreditCardProductWithMatchingSlug() throws Exception {
+  void shouldReturnCreditCardProductWhenSlugMatches() throws Exception {
     String slug = "test-credit-card";
     Product product =
         new CreditCardProduct(
@@ -75,7 +75,7 @@ public class PublicProductControllerTest {
   }
 
   @Test
-  void testGetProductGetsDepositProductWithMatchingSlug() throws Exception {
+  void shouldReturnDepositProductWhenSlugMatches() throws Exception {
     String slug = "test-savings-account";
     Product product =
         new DepositProduct(
@@ -119,7 +119,7 @@ public class PublicProductControllerTest {
   }
 
   @Test
-  void testGetProductReturns404WhenProductNotFound() throws Exception {
+  void shouldReturnNotFoundWhenProductDoesNotExist() throws Exception {
     String slug = "non-existent-product";
 
     when(productQueryService.findActiveProduct(slug)).thenThrow(new ProductNotFoundException());
@@ -135,7 +135,7 @@ public class PublicProductControllerTest {
   }
 
   @Test
-  void testGetProductReturns400WhenInvalidSlug() throws Exception {
+  void shouldReturnBadRequestWhenSlugIsInvalid() throws Exception {
     String slug = "invalid@slug";
 
     when(productQueryService.findActiveProduct(slug)).thenThrow(new IllegalArgumentException());
