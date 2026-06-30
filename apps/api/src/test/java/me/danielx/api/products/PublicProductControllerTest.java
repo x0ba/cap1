@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,19 +48,21 @@ public class PublicProductControllerTest {
             500L);
     PublicProductDetailResponse expectedResponse = PublicProductDetailResponse.from(product);
 
-    Mockito.when(productQueryService.findActiveProduct(slug)).thenReturn(product);
+    when(productQueryService.findActiveProduct(slug)).thenReturn(product);
 
     mockMvc
         .perform(get("/api/public/v1/products/{slug}", slug))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").doesNotExist())
+        .andExpect(jsonPath("$.*", hasSize(8)))
         .andExpect(jsonPath("$.slug").value(expectedResponse.slug()))
         .andExpect(jsonPath("$.name").value(expectedResponse.name()))
         .andExpect(jsonPath("$.shortDescription").value(expectedResponse.shortDescription()))
         .andExpect(jsonPath("$.description").value(expectedResponse.description()))
+        .andExpect(jsonPath("$.type").value(expectedResponse.type().name()))
         .andExpect(jsonPath("$.featured").value(expectedResponse.featured()))
         .andExpect(
             jsonPath("$.applicationAvailable").value(expectedResponse.applicationAvailable()))
+        .andExpect(jsonPath("$.productDetails.*", hasSize(4)))
         .andExpect(jsonPath("$.productDetails.kind").value("CREDIT_CARD"))
         .andExpect(
             jsonPath("$.productDetails.rewardCategory")
@@ -66,6 +70,6 @@ public class PublicProductControllerTest {
         .andExpect(jsonPath("$.productDetails.rewardRate").value(0.03))
         .andExpect(jsonPath("$.productDetails.spendingCap").value(500));
 
-    Mockito.verify(productQueryService).findActiveProduct(slug);
+    verify(productQueryService).findActiveProduct(slug);
   }
 }
