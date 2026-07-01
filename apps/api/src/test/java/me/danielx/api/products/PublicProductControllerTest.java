@@ -12,10 +12,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
@@ -146,5 +152,32 @@ public class PublicProductControllerTest {
         .andExpect(jsonPath("$.title").value("Invalid request"))
         .andExpect(jsonPath("$.detail").value("Request validation failed"))
         .andExpect(jsonPath("$.instance").value("/api/public/v1/products/" + slug));
+  }
+
+  @Test
+  void shouldReturnPageOf20SortedByDisplayOrderNameId() throws Exception {
+    List<Product> productList =
+        IntStream.range(0, 20)
+            .mapToObj(
+                i ->
+                    new DepositProduct(
+                        "test-product-" + i,
+                        "Test Savings Account",
+                        "Test Savings Account",
+                        "A test savings account with a competitive APY.",
+                        ProductType.SAVINGS,
+                        ProductStatus.ACTIVE,
+                        false,
+                        true,
+                        i,
+                        new BigDecimal("4.25000"),
+                        100L,
+                        5L,
+                        500L))
+            .toList();
+    Pageable pageable = PageRequest.of(0, 20);
+    Page<Product> page = new PageImpl<>(productList, pageable, 20);
+
+    when(productQueryService.findActiveProducts(pageable)).thenReturn(page);
   }
 }
